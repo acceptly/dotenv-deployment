@@ -5,8 +5,14 @@ require "dotenv/deployment/version"
 Dotenv.load '.env'
 Dotenv.load *Dir.glob("#{Rails.root}/config/**/*.env") if defined?(Rails)
 
+Dotenv.overload ".env.mine"
+Dotenv.load *Dir.glob("#{Rails.root}/config/**/*.env.mine") if defined?(Rails)
+
 # Override any existing variables if an environment-specific file exists
 if environment = ENV['RACK_ENV'] || (defined?(Rails) && Rails.env)
   Dotenv.overload ".env.#{environment}"
   Dotenv.overload *Dir.glob("#{Rails.root}/config/**/*.env.#{environment}") if defined?(Rails)
+
+  Dotenv.overload ".env.#{environment}.mine"
+  Dotenv.overload *Dir.glob("#{Rails.root}/config/**/*.env.#{environment}.mine") if defined?(Rails)
 end
